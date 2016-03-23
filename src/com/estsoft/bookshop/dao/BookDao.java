@@ -30,6 +30,36 @@ public class BookDao {
 		return conn;
 	}
 	
+	public void updateState( BookVo bookVo ) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = getConnection();
+			
+			String sql = "UPDATE book SET state = ? WHERE no = ?";
+			pstmt = conn.prepareStatement( sql );
+			
+			pstmt.setString( 1, bookVo.getState() );
+			pstmt.setLong( 2, bookVo.getNo() );
+			
+			pstmt.executeUpdate();
+		} catch( SQLException ex ) {
+			System.out.println( "error:" + ex );
+		} finally {
+			//6. 자원정리(clean-up)
+			try {
+				if( pstmt != null ) {
+					pstmt.close();
+				}
+				if( conn != null ) {
+					conn.close();
+				}
+			} catch( SQLException ex ) {
+				ex.printStackTrace();
+			}
+		}	
+	}
+	
 	public void insert( BookVo bookVo ) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -62,6 +92,62 @@ public class BookDao {
 				ex.printStackTrace();
 			}
 		}		
+	}
+	
+	public BookVo get(  Long no ) {
+		BookVo bookVo = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			
+			//3. Statement 준비
+			String sql =
+					"      SELECT a.no, a.title, IF( a.state = 'rent', '대여중', '재고있음' ), b.name" +
+					"       FROM book a, author b" +
+                    "     WHERE a.author_no = b.no" +
+					"         AND a.no = ?";
+			pstmt = conn.prepareStatement( sql );
+			
+			//4. bind
+			pstmt.setLong( 1, no );
+			
+			//5. SQL 실행
+			rs = pstmt.executeQuery();
+			if( rs.next() ) {
+				Long no2 = rs.getLong( 1 );
+				String title = rs.getString( 2 );
+				String state = rs.getString( 3 );
+				String authorName = rs.getString( 4 );
+				
+				bookVo = new BookVo();
+				bookVo.setNo( no2 );
+				bookVo.setTitle( title );
+				bookVo.setState( state );
+				bookVo.setAuthorName( authorName );				
+			}
+			
+		} catch( SQLException ex ) {
+			System.out.println( "SQL 오류:" + ex );
+		} finally {
+			//6. 자원정리(clean-up)
+			try {
+				if( rs != null ) {
+					rs.close();
+				}
+				if( pstmt != null ) {
+					pstmt.close();
+				}
+				if( conn != null ) {
+					conn.close();
+				}
+			} catch( SQLException ex ) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return bookVo;
 	}
 	
 	public List<BookVo> getList() {

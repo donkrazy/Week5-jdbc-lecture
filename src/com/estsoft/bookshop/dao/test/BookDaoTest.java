@@ -11,8 +11,18 @@ public class BookDaoTest {
 		//insert test
 		//insertTest();
 		
+		// updateState test
+		updateStateTest();
+		
 		//getList test
 		getListTest();
+	}
+	
+	public static void updateStateTest() {
+		BookVo bookVo = new BookVo();
+		bookVo.setNo( 6L );
+		bookVo.setState( "available" );
+		new BookDao().updateState( bookVo );
 	}
 	
 	public static void getListTest() {
