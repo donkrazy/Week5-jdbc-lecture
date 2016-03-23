@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.estsoft.bookshop.vo.AuthorVo;
 import com.estsoft.bookshop.vo.BookVo;
 
 public class BookDao {
