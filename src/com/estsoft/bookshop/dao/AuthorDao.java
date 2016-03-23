@@ -74,7 +74,6 @@ public class AuthorDao {
 				ex.printStackTrace();
 			}
 		}
-
 		return list;
 	}
 	
