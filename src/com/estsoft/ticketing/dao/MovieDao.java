@@ -9,11 +9,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.estsoft.bookshop.vo.BookVo;
+import com.estsoft.bookshop.dao.DBConnection;
 import com.estsoft.ticketing.vo.MovieVo;
 
 public class MovieDao {
+	private DBConnection dbConnection;
 	
+	public MovieDao( DBConnection dbConnection ) {
+		this.dbConnection = dbConnection;
+	}
 	private Connection getConnection() throws SQLException {
 		Connection conn = null;
 		try {
@@ -35,7 +39,7 @@ public class MovieDao {
 		PreparedStatement pstmt = null;
 		try {
 			// DB 연결 가져오기
-			conn = getConnection();
+			conn = dbConnection.getConnection();
 			
 			//Statement 준비
 			String sql = "insert into movie values(  null, ? )";
